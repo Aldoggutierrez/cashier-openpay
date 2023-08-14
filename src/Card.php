@@ -8,7 +8,7 @@ use Perafan\CashierOpenpay\Openpay\Card as OpenpayCard;
 class Card extends Model
 {
     protected $fillable = [
-        'user_id', 'name', 'openpay_id', 'type', 'brand', 'holder_name', 'card_number',
+        'cardeable_id', 'cardeable_type', 'name', 'openpay_id', 'type', 'brand', 'holder_name', 'card_number',
         'expiration_month', 'expiration_year', 'bank_name', 'bank_code',
     ];
 
@@ -19,7 +19,7 @@ class Card extends Model
      */
     public function user()
     {
-        return $this->owner();
+        return $this->cardeable();
     }
 
     /**
@@ -27,11 +27,9 @@ class Card extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function owner()
+    public function cardeable()
     {
-        $model = config('cashier_openpay.model');
-
-        return $this->belongsTo($model, (new $model)->getForeignKey());
+        return $this->morphTo();
     }
 
     /**
@@ -41,7 +39,7 @@ class Card extends Model
      */
     public function asOpenpayCard()
     {
-        $customer = $this->owner->asOpenpayCustomer();
+        $customer = $this->cardeable->asOpenpayCustomer();
 
         return OpenpayCard::find($this->openpay_id, $customer);
     }
