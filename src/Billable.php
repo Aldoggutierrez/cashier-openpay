@@ -3,7 +3,8 @@
 namespace Perafan\CashierOpenpay;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use OpenpayCustomer;
+use Illuminate\Support\Facades\Config;
+use Openpay\Resources\OpenpayCustomer;
 use Perafan\CashierOpenpay\Openpay\BankAccount as OpenpayBankAccount;
 use Perafan\CashierOpenpay\Openpay\Card as OpenpayCard;
 use Perafan\CashierOpenpay\Openpay\Charge as OpenpayCharge;
@@ -26,6 +27,21 @@ trait Billable
         $customer = $this->asOpenpayCustomer();
 
         return OpenpayCharge::create($options, $customer);
+    }
+
+    public function capture($charge_id, $amount = null)
+    {
+        $options = [];
+
+        if ($amount != null) {
+            $options = array_merge([
+                'amount' => $amount,
+            ], $options);
+        }
+
+        $customer = $this->asOpenpayCustomer();
+
+        return OpenpayCharge::capture($charge_id, $options, $customer);
     }
 
     /**
@@ -91,7 +107,7 @@ trait Billable
     {
         $subscription = $this->subscription($name);
 
-        if (! $subscription || ! $subscription->valid()) {
+        if (!$subscription || !$subscription->valid()) {
             return false;
         }
 
@@ -107,7 +123,7 @@ trait Billable
     {
         $subscription = $this->subscription($name);
 
-        if (! $subscription || ! $subscription->valid()) {
+        if (!$subscription || !$subscription->valid()) {
             return false;
         }
 
@@ -126,7 +142,7 @@ trait Billable
      */
     public function onPlan($plan)
     {
-        return ! is_null($this->subscriptions->first(function (Subscription $subscription) use ($plan) {
+        return !is_null($this->subscriptions->first(function (Subscription $subscription) use ($plan) {
             return $subscription->valid() && $subscription->hasPlan($plan);
         }));
     }
@@ -142,7 +158,7 @@ trait Billable
     {
         $subscription = $this->subscription($name);
 
-        if (! $subscription || ! $subscription->onTrial()) {
+        if (!$subscription || !$subscription->onTrial()) {
             return false;
         }
 
@@ -209,7 +225,7 @@ trait Billable
      */
     public function cards()
     {
-        return $this->hasMany(Card::class, $this->getForeignKey());
+        return $this->morphMany(Card::class, 'cardeable');
     }
 
     public function addBankAccount(array $bank_account_data)
@@ -248,7 +264,7 @@ trait Billable
      */
     public function hasOpenpayId()
     {
-        return ! is_null($this->openpay_id);
+        return !is_null($this->openpay_id);
     }
 
     /**
@@ -264,8 +280,8 @@ trait Billable
         }
 
         $options = array_key_exists('name', $options) ? $options : array_merge($options, ['name' => $this->name]);
-        $options = array_key_exists('email', $options) ? $options : array_merge($options, ['email' => $this->email]);
-        $options = array_key_exists('external_id', $options) ? $options : array_merge($options, ['external_id' => $this->id]);
+        $options = array_key_exists('email', $options) ? $options : array_merge($options, ['email' => $this->email ?? $this->email->email ?? Config('cashier_openpay.default_mail')]);
+        $options = array_key_exists('external_id', $options) ? $options : array_merge($options, ['external_id' => $this::class . "-" . $this->id]);
 
         $customer = Customer::add($options);
 
@@ -300,6 +316,6 @@ trait Billable
             return Customer::find($this->openpay_id);
         }
 
-        $this->createAsOpenpayCustomer();
+        return $this->createAsOpenpayCustomer();
     }
 }

@@ -3,7 +3,7 @@
 namespace Perafan\CashierOpenpay\Openpay;
 
 use Illuminate\Support\Str;
-use OpenpayCustomer;
+use Openpay\Resources\OpenpayCustomer;
 use Perafan\CashierOpenpay\OpenpayInstance;
 
 abstract class Base

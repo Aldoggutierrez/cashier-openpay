@@ -11,15 +11,11 @@
     ],
     "homepage": "https://github.com/Perafan18/cashier-openpay",
     "require": {
-        "illuminate/support": "~9",
         "openpay/sdk": "dev-master",
         "ext-json": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0",
-        "mockery/mockery": "^1.1",
-        "orchestra/testbench": "~3|~4",
-        "sempro/phpunit-pretty-print": "^1.0"
+        "laravel/framework": "v9.52.5"
     },
     "autoload": {
         "psr-4": {
@@ -42,4 +38,3 @@
         }
     }
 }
-

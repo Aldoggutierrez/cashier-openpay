@@ -30,6 +30,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | default mail
+    |--------------------------------------------------------------------------
+    |
+    | default mail if the model doesn't have a email
+    */
+
+    'default_mail' =>env('OPENPAY_DEFAULT_MAIL'),
+    /*
+    |--------------------------------------------------------------------------
     | Log Errors
     |--------------------------------------------------------------------------
     |
@@ -51,7 +60,7 @@ return [
     |
     */
 
-    'model' => env('OPENPAY_MODEL', App\Models\User::class),
+    // 'model' => env('OPENPAY_MODEL', App\Models\User::class),
 
     /*
     |--------------------------------------------------------------------------
@@ -67,14 +76,14 @@ return [
     |
     */
 
-    'webhook' => [
+    // 'webhook' => [
 
-        'route_name' => env('OPENPAY_WEBHOOK_ROUTE', 'openpay.webhooks.handle'),
+    //     'route_name' => env('OPENPAY_WEBHOOK_ROUTE', 'openpay.webhooks.handle'),
 
-        'url' => env('OPENPAY_WEBHOOK_URL', 'openpay/webhooks/handle'),
+    //     'url' => env('OPENPAY_WEBHOOK_URL', 'openpay/webhooks/handle'),
 
-        'controller' => env('OPENPAY_WEBHOOK_CONTROLLER', '\App\Http\Controllers\WebhookController'),
+    //     'controller' => env('OPENPAY_WEBHOOK_CONTROLLER', '\App\Http\Controllers\WebhookController'),
 
-        'method' => env('OPENPAY_WEBHOOK_METHOD', 'handleWebhook'),
-    ],
+    //     'method' => env('OPENPAY_WEBHOOK_METHOD', 'handleWebhook'),
+    // ],
 ];
