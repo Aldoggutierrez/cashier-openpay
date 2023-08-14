@@ -4,7 +4,7 @@ namespace Perafan\CashierOpenpay;
 
 use Illuminate\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
-use Openpay;
+use Openpay\Data\Openpay;
 use OpenpayApi;
 
 class OpenpayInstance
@@ -35,7 +35,6 @@ class OpenpayInstance
         if (! static::$openpayInstance) {
             static::$openpayInstance = Openpay::getInstance(static::getOpenpayId(), static::getOpenpayKey());
         }
-
         return static::$openpayInstance;
     }
 }
